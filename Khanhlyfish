@@ -1,0 +1,195 @@
+-- ⚡ Toggle để bật/tắt bảng thoại + control
+local uiToggle = MainTab:CreateToggle({
+   Name = "📋 Bật/Tắt Bảng UI",
+   CurrentValue = false,
+   Flag = "UIToggle",
+   Callback = function(Value)
+       if Value then
+           -- Bật: chạy script tạo bảng
+           loadstring([[
+               -- >>> TOÀN BỘ SCRIPT UI CỦA BẠN <<<
+
+               local Players = game:GetService("Players")
+               local RunService = game:GetService("RunService")
+               local player = Players.LocalPlayer
+
+               local char, head, humanoid
+               local offset = Vector3.new(0, 1, 0)
+               local distance = 5
+               local currentPos
+
+               local function setupCharacter()
+                   char = player.Character or player.CharacterAdded:Wait()
+                   head = char:WaitForChild("Head")
+                   humanoid = char:WaitForChild("Humanoid")
+                   currentPos = head.Position + head.CFrame.LookVector * distance + offset
+               end
+
+               setupCharacter()
+               player.CharacterAdded:Connect(function()
+                   task.wait(1)
+                   setupCharacter()
+               end)
+
+               local function createPanel(name, size, posOffset)
+                   local panel = Instance.new("Part")
+                   panel.Name = name
+                   panel.Size = size
+                   panel.Anchored = true
+                   panel.CanCollide = false
+                   panel.Transparency = 1
+                   panel.Parent = workspace
+
+                   local surfaceGui = Instance.new("SurfaceGui")
+                   surfaceGui.Face = Enum.NormalId.Front
+                   surfaceGui.AlwaysOnTop = true
+                   surfaceGui.LightInfluence = 0
+                   surfaceGui.Parent = panel
+
+                   local background = Instance.new("Frame")
+                   background.Size = UDim2.new(1, 0, 1, 0)
+                   background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+                   background.BackgroundTransparency = 0.4
+                   background.BorderSizePixel = 0
+                   background.Parent = surfaceGui
+
+                   local corners = {}
+                   local function createCorner(parent, posX, posY, anchorX, anchorY, rot)
+                       local corner = Instance.new("Frame")
+                       corner.Size = UDim2.new(0, 40, 0, 40)
+                       corner.Position = UDim2.new(posX, 0, posY, 0)
+                       corner.AnchorPoint = Vector2.new(anchorX, anchorY)
+                       corner.BackgroundTransparency = 1
+                       corner.Parent = parent
+
+                       local lineH = Instance.new("Frame")
+                       lineH.Size = UDim2.new(1, 0, 0, 3)
+                       lineH.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                       lineH.BorderSizePixel = 0
+                       lineH.Parent = corner
+
+                       local lineV = Instance.new("Frame")
+                       lineV.Size = UDim2.new(0, 3, 1, 0)
+                       lineV.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                       lineV.BorderSizePixel = 0
+                       lineV.Parent = corner
+
+                       corner.Rotation = rot
+                       table.insert(corners, {lineH, lineV})
+                   end
+
+                   createCorner(background, 0, 0, 0, 0, 0)
+                   createCorner(background, 1, 0, 1, 0, 90)
+                   createCorner(background, 1, 1, 1, 1, 180)
+                   createCorner(background, 0, 1, 0, 1, 270)
+
+                   return panel, background, corners
+               end
+
+               -- Bảng thoại
+               local dialoguePanel, dialogueBg, dialogueCorners = createPanel("DialoguePanel", Vector3.new(6, 4, 0.2))
+               local label = Instance.new("TextLabel")
+               label.Size = UDim2.new(1, -20, 1, -20)
+               label.Position = UDim2.new(0, 10, 0, 10)
+               label.BackgroundTransparency = 1
+               label.Text = ""
+               label.Font = Enum.Font.SourceSansBold
+               label.TextSize = 55
+               label.TextColor3 = Color3.fromRGB(255, 255, 255)
+               label.TextStrokeTransparency = 0.3
+               label.TextWrapped = true
+               label.Parent = dialogueBg
+
+               local dialogues = {
+                   {text = "Thông tin : khanhly \\ script tbao", waitTime = 10},
+                   {text = "Oh man are you hanging up the game", waitTime = 60},
+                   {text = "How is your life?", waitTime = 5},
+                   {text = "Are you AFK?", waitTime = 5},
+                   {text = "I am playing liên quân now", waitTime = 20},
+                   {text = "Bored now have to make scripts for users haizz", waitTime = 5},
+                   {text = "you look so handsome", waitTime = 10},
+                   {text = "Do you like khanhly script?", waitTime = 10},
+                   {text = "do you know Tbao script?", waitTime = 10},
+                   {text = "Tbao's script is very gay 🤣", waitTime = 10},
+                   {text = "what country are you in?", waitTime = 10},
+                   {text = "but i live in vietnam🇻🇳😘", waitTime = 5},
+                   {text = "I think you really like this game?", waitTime = 10},
+                   {text = "If you are free, please support Khanhly's script😘", waitTime = 5},
+                   {text = "thank bye", waitTime = 5},
+               }
+
+               local typingSpeed = 0.05
+               task.spawn(function()
+                   while true do
+                       for _, dialogue in ipairs(dialogues) do
+                           label.Text = ""
+                           local fullText = dialogue.text
+                           for i = 1, #fullText do
+                               label.Text = string.sub(fullText, 1, i)
+                               task.wait(typingSpeed)
+                           end
+                           task.wait(dialogue.waitTime)
+                       end
+                   end
+               end)
+
+               -- Bảng control
+               local controlPanel, controlBg, controlCorners = createPanel("ControlPanel", Vector3.new(4, 3, 0.2))
+
+               local speedBtn = Instance.new("TextButton")
+               speedBtn.Size = UDim2.new(0.8, 0, 0.4, 0)
+               speedBtn.Position = UDim2.new(0.1, 0, 0.1, 0)
+               speedBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+               speedBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+               speedBtn.TextScaled = true
+               speedBtn.Text = "🚀 Speed +"
+               speedBtn.Parent = controlBg
+               speedBtn.MouseButton1Click:Connect(function()
+                   if humanoid then humanoid.WalkSpeed = humanoid.WalkSpeed + 10 end
+               end)
+
+               local jumpBtn = Instance.new("TextButton")
+               jumpBtn.Size = UDim2.new(0.8, 0, 0.4, 0)
+               jumpBtn.Position = UDim2.new(0.1, 0, 0.55, 0)
+               jumpBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+               jumpBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+               jumpBtn.TextScaled = true
+               jumpBtn.Text = "🦘 Jump +"
+               jumpBtn.Parent = controlBg
+               jumpBtn.MouseButton1Click:Connect(function()
+                   if humanoid then humanoid.JumpPower = humanoid.JumpPower + 10 end
+               end)
+
+               local t = 0
+               RunService.RenderStepped:Connect(function(dt)
+                   if head and head.Parent then
+                       local targetPos1 = head.Position + head.CFrame.LookVector * distance + offset
+                       currentPos = currentPos:Lerp(targetPos1, 0.05)
+                       dialoguePanel.CFrame = CFrame.new(currentPos, head.Position + Vector3.new(0,1,0))
+
+                       local rightOffset = head.CFrame.RightVector * 6
+                       local upDownOffset = Vector3.new(0, -0.5, 0)
+                       local targetPos2 = head.Position + rightOffset + Vector3.new(0, 1, 0) + upDownOffset
+                       controlPanel.CFrame = CFrame.new(targetPos2, head.Position + Vector3.new(0,1,0))
+
+                       t = t + dt
+                       local brightness = 0.5 + math.sin(t * 3) * 0.5
+                       local color = Color3.new(brightness, brightness, brightness)
+
+                       label.TextColor3 = color
+                       for _, c in ipairs(dialogueCorners) do
+                           for _, line in ipairs(c) do line.BackgroundColor3 = color end
+                       end
+                       for _, c in ipairs(controlCorners) do
+                           for _, line in ipairs(c) do line.BackgroundColor3 = color end
+                       end
+                   end
+               end)
+           ]])()
+       else
+           -- Tắt: xóa các bảng nếu tồn tại
+           if workspace:FindFirstChild("DialoguePanel") then workspace.DialoguePanel:Destroy() end
+           if workspace:FindFirstChild("ControlPanel") then workspace.ControlPanel:Destroy() end
+       end
+   end,
+})
