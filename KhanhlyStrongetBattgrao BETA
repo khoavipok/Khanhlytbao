@@ -1,100 +1,125 @@
--- 🔰 Confirm Loader cho Star Orbit (UI vuông + fade in/out mượt)
+-- 🔥 Neon Dark HUD Confirm UI + Logo xoay
 local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
 
-local url = "https://discord.gg/raAPZrETkZ" -- 📌 link copy vào clipboard
-local scriptUrl = "https://raw.githubusercontent.com/khoavipok/ScriptkhanhlyHUB/refs/heads/main/Battlegrounds%20BETA" -- 📌 link script Star Orbit
+local url = "https://discord.gg/raAPZrETkZ"
+local scriptUrl = "https://raw.githubusercontent.com/khoavipok/ScriptkhanhlyHUB/refs/heads/main/Battlegrounds%20BETA"
 
--- Tạo ScreenGui
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game:GetService("CoreGui")
+-- 🔹 Blur nền
+local Blur = Instance.new("BlurEffect")
+Blur.Size = 0
+Blur.Parent = Lighting
+TweenService:Create(Blur, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {Size = 12}):Play()
+
+-- UI
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 ScreenGui.Name = "ConfirmStarOrbit"
 
--- Frame chính (vuông + mờ)
 local Frame = Instance.new("Frame", ScreenGui)
-Frame.Size = UDim2.new(0, 0, 0, 0) -- ban đầu nhỏ lại
+Frame.Size = UDim2.new(0, 0, 0, 0)
 Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 Frame.AnchorPoint = Vector2.new(0.5, 0.5)
-Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-Frame.BackgroundTransparency = 1 -- ban đầu trong suốt
+Frame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 Frame.BorderSizePixel = 0
-Frame.Visible = true
 
--- Bo góc
-local UICorner = Instance.new("UICorner", Frame)
-UICorner.CornerRadius = UDim.new(0, 8)
+local Corner = Instance.new("UICorner", Frame)
+Corner.CornerRadius = UDim.new(0, 10)
 
--- Tiêu đề
+-- 🔹 Neon viền
+local Stroke = Instance.new("UIStroke", Frame)
+Stroke.Thickness = 2
+Stroke.Color = Color3.fromRGB(170, 0, 255)
+Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+Stroke.Transparency = 0.2
+
+-- 🌌 Logo xoay
+local Logo = Instance.new("ImageLabel", Frame)
+Logo.Size = UDim2.new(0, 60, 0, 60)
+Logo.Position = UDim2.new(0.5, 0, 0, 10)
+Logo.AnchorPoint = Vector2.new(0.5, 0)
+Logo.Image = "rbxassetid://111450164466537" -- bạn đổi ID logo nếu muốn
+Logo.BackgroundTransparency = 1
+
+-- Tween nhấp nhô logo
+spawn(function()
+    while true do
+        TweenService:Create(Logo, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+            Position = UDim2.new(0.5, 0, 0, 0)
+        }):Play()
+        wait(0.6)
+        TweenService:Create(Logo, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+            Position = UDim2.new(0.5, 0, 0, 10)
+        }):Play()
+        wait(0.6)
+    end
+end)
+
 local Title = Instance.new("TextLabel", Frame)
-Title.Size = UDim2.new(1, -20, 0.5, -10)
-Title.Position = UDim2.new(0, 10, 0, 10)
+Title.Size = UDim2.new(1, -20, 0.35, 0)
+Title.Position = UDim2.new(0, 10, 0.25, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "khanhly strongest battlegrounds BETA🔥"
-Title.TextColor3 = Color3.new(1,1,1)
-Title.Font = Enum.Font.SourceSansBold
+Title.Text = "khanhly BETA 🔥"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
 Title.TextScaled = true
-Title.TextWrapped = true
 
--- Nút OK
 local YesBtn = Instance.new("TextButton", Frame)
-YesBtn.Size = UDim2.new(0.5, -15, 0.25, 0)
+YesBtn.Size = UDim2.new(0.5, -15, 0.28, 0)
 YesBtn.Position = UDim2.new(0, 10, 0.65, 0)
-YesBtn.Text = "OK"
-YesBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+YesBtn.Text = "YES"
 YesBtn.TextColor3 = Color3.new(1,1,1)
-YesBtn.Font = Enum.Font.SourceSansBold
+YesBtn.BackgroundColor3 = Color3.fromRGB(110, 0, 210)
+YesBtn.Font = Enum.Font.GothamBold
 YesBtn.TextScaled = true
-local UICornerY = Instance.new("UICorner", YesBtn)
-UICornerY.CornerRadius = UDim.new(0, 6)
+Instance.new("UICorner", YesBtn).CornerRadius = UDim.new(0, 6)
 
--- Nút Không
 local NoBtn = Instance.new("TextButton", Frame)
-NoBtn.Size = UDim2.new(0.5, -15, 0.25, 0)
+NoBtn.Size = UDim2.new(0.5, -15, 0.28, 0)
 NoBtn.Position = UDim2.new(0.5, 5, 0.65, 0)
-NoBtn.Text = "NO!"
-NoBtn.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+NoBtn.Text = "NO"
 NoBtn.TextColor3 = Color3.new(1,1,1)
-NoBtn.Font = Enum.Font.SourceSansBold
+NoBtn.BackgroundColor3 = Color3.fromRGB(70, 0, 120)
+NoBtn.Font = Enum.Font.GothamBold
 NoBtn.TextScaled = true
-local UICornerN = Instance.new("UICorner", NoBtn)
-UICornerN.CornerRadius = UDim.new(0, 6)
+Instance.new("UICorner", NoBtn).CornerRadius = UDim.new(0, 6)
 
--- 📌 Tween mở mượt (fade in + phóng to)
-TweenService:Create(Frame, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-    BackgroundTransparency = 0.2,
-    Size = UDim2.new(0, 260, 0, 130)
+-- Hover effect
+local function Hover(btn, c1, c2)
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = c1}):Play()
+    end)
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = c2}):Play()
+    end)
+end
+Hover(YesBtn, Color3.fromRGB(160, 0, 255), Color3.fromRGB(110, 0, 210))
+Hover(NoBtn, Color3.fromRGB(120, 0, 190), Color3.fromRGB(70, 0, 120))
+
+-- Fade In UI
+TweenService:Create(Frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad), {
+    BackgroundTransparency = 0.15,
+    Size = UDim2.new(0, 270, 0, 165)
 }):Play()
 
--- 📌 Hàm fade out rồi ẩn UI
+-- Đóng UI
 local function CloseUI()
-    local tween = TweenService:Create(Frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+    TweenService:Create(Frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {
         BackgroundTransparency = 1,
-        Size = UDim2.new(0, 0, 0, 0)
-    })
-    tween:Play()
-    tween.Completed:Connect(function()
+        Size = UDim2.new(0,0,0,0)
+    }):Play()
+    TweenService:Create(Blur, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {Size = 0}):Play()
+    task.delay(0.4, function()
+        Blur:Destroy()
         ScreenGui:Destroy()
     end)
 end
 
--- 📌 Khi bấm OK
 YesBtn.MouseButton1Click:Connect(function()
-    -- Copy link
-    if setclipboard then
-        setclipboard(url)
-        print("✅ Đã copy link Star Orbit vào clipboard")
-    else
-        warn("⚠️ Executor của bạn không hỗ trợ setclipboard")
-    end
-
-    -- Load script Star Orbit
-    loadstring(game:HttpGet(scriptUrl))()
-
-    -- Đóng UI mượt
     CloseUI()
+    if setclipboard then setclipboard(url) end
+    task.delay(0.25, function()
+        loadstring(game:HttpGet(scriptUrl))()
+    end)
 end)
 
--- 📌 Khi bấm Không
-NoBtn.MouseButton1Click:Connect(function()
-    print("❌ Bạn đã chọn KHÔNG khởi động.")
-    CloseUI()
-end)
+NoBtn.MouseButton1Click:Connect(CloseUI)
